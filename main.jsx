@@ -1,7 +1,7 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { ClaudeRecipe } from "./clauderecipe.jsx"
 import { IngredientsList } from "./ingredientslist.jsx"
-
+import { useRef } from "react"
 import { getRecipeFromMistral } from "./ai.js"
 export function Main(){
     const [ingredients,setIngredients]=useState([])
@@ -21,6 +21,12 @@ export function Main(){
             recipes(`Error: ${e.message}`)
         }
     }
+    const recipeSection=useRef(null)
+    useEffect(()=>{
+        if(recipeShown!=""&& recipeSection.current!=null){
+          recipeSection.current.scrollIntoView({behavior:"smooth"})
+        }
+    },[recipeShown])
     function onsubmit(formData){
         const newIngredient=formData.get("ingredient")//input name used here as ingredient
         
@@ -35,6 +41,7 @@ export function Main(){
             </form>
             {ingredients.length >0 && 
             <IngredientsList 
+            ref={recipeSection}
             ingredients={ingredients} 
             ingredientslist={IngredientsLists}
             getrecipe={getRecipe}
